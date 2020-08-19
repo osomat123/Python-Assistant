@@ -8,7 +8,7 @@ def getApps():
         with open("apps.json","r") as read_file:
             strApps = read_file.read()
             apps = eval(json.loads(strApps))
-     
+        
     except FileNotFoundError:
         
         apps = {}
@@ -27,6 +27,15 @@ def getApps():
                 
         with open("apps.json",'w') as file:
             file.write(json.dumps(str(apps)))
+            
+    try:
+        with open("nicknames.json","r") as read_file:
+            strApps = read_file.read()
+            nicks = eval(json.loads(strApps))
+            apps.update(nicks)
+            
+    except FileNotFoundError:
+        pass
     
     return apps
 
@@ -39,19 +48,27 @@ def addNick(nick,longApp):
         strApps = read_file.read()
         apps = eval(json.loads(strApps))
         
-    newApps = apps
+    try:
+        with open("nicknames.json","r") as read_file:
+            strApps = read_file.read()
+            nicks = eval(json.loads(strApps))
+            
+    except FileNotFoundError:
+        nicks = {}
+        
+    newNicks = nicks
     
     for app in apps.keys():
         if app.upper() == longApp:
-            newApps[nick] = apps[app]
+            nicks[nick] = apps[app]
             flag = 1
             break
     
     if flag ==0:
         return False
     
-    with open("apps.json",'w') as file:
-        file.write(json.dumps(str(newApps)))
+    with open("nicknames.json",'w') as file:
+        file.write(json.dumps(str(newNicks)))
     
     return True
 
@@ -107,14 +124,15 @@ while True:
         ret = addNick(nick,longApp)
         
         if ret == True:
-            with open("apps.json","r") as read_file:
+            with open("nicknames.json","r") as read_file:
                 strApps = read_file.read()
-                apps = eval(json.loads(strApps))
+                nicks = eval(json.loads(strApps))
+                
+            apps.update(nicks)
                 
             print("Nickname added.\n")
             pyttsx3.speak("Nickname added.")
             appFound = 1
-            continue
             
     if ('RUN' in query) or ('OPEN' in query) or ('EXECUTE' in query):
         for app in apps.keys():
