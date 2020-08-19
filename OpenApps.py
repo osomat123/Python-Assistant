@@ -31,26 +31,33 @@ def getApps():
     return apps
 
 
-def addNick(apps,nick,longApp):
+def addNick(nick,longApp):
     
     flag = 0
     
+    with open("apps.json","r") as read_file:
+        strApps = read_file.read()
+        apps = eval(json.loads(strApps))
+        
+    newApps = apps
+    
     for app in apps.keys():
         if app.upper() == longApp:
-            apps[longApp] = apps[app]
+            newApps[nick] = apps[app]
             flag = 1
+            break
     
     if flag ==0:
-        return None
+        return False
     
     with open("apps.json",'w') as file:
-        file.write(json.dumps(str(apps)))
+        file.write(json.dumps(str(newApps)))
     
-    return apps
+    return True
 
 
 print("Initializing...\n")
-valid = ['RUN','OPEN','EXECUTE','BYE','EXIT','QUIT','ADD NICKNAME','HELP','STOP']
+valid = ['RUN','OPEN','EXECUTE','BYE','EXIT','QUIT','ADD NICKNAME','HELP','STOP','CIAO']
 apps = getApps()
 
 print("Welcome to Py Assistant")
@@ -82,7 +89,7 @@ while True:
         f.close()
         continue
         
-    if ("BYE" == query) or ("EXIT" == query) or ("QUIT" == query) or ('STOP' == query):
+    if ("BYE" == query) or ("EXIT" == query) or ("QUIT" == query) or ('STOP' == query) or ('CIAO' == query):
         print("Bye!\n")
         pyttsx3.speak("Bye.")
         break
@@ -97,20 +104,24 @@ while True:
             pyttsx3.speak("Nickname already exists. Give another nickname")
             continue
         
-        ret = addNick(apps,nick,longApp)
+        ret = addNick(nick,longApp)
         
-        if ret != None:
-            app = ret
+        if ret == True:
+            with open("apps.json","r") as read_file:
+                strApps = read_file.read()
+                apps = eval(json.loads(strApps))
+                
             print("Nickname added.\n")
             pyttsx3.speak("Nickname added.")
-            break
+            appFound = 1
+            continue
             
     if ('RUN' in query) or ('OPEN' in query) or ('EXECUTE' in query):
         for app in apps.keys():
             if app.upper() in query:
                 command = 'open '+apps[app]
-                print("Opening "+app+" ...\n")
-                pyttsx3.speak("Opening "+app)
+                print("Sure!\nOpening "+app+" ...\n")
+                pyttsx3.speak("Sure.....Opening "+app)
                 os.system(command)
                 appFound = 1
                 break        
