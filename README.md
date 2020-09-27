@@ -4,7 +4,7 @@ A python based virtual assistant.
 
 This virtual assistant can open any application that is installed on a Mac. Just type in the app you want the assistant to open and it'll be done.
 
-This virtual assistant can open any application that is installed on a Mac. 
+This virtual assistant can open any application that is installed on a Mac.
 
 ## How to use?
 
@@ -16,6 +16,8 @@ Don't want to write down the entire name of of an application? Just type "add ni
 For example: Type "add nickname Webex for Cisco Webex Meetings" and it'll be done!
 
 Finally, if you want to exit just type "quit" or "bye" or "exit" or "stop" or "ciao" and it will shut down shutdown.
+
+It can also search for stuff on Google. Just ask!
 
 ## Note
 

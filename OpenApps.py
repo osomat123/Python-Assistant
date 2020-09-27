@@ -1,6 +1,7 @@
 import os
 import pyttsx3
 import json
+import speech_recognition as sr
 
 def getApps():
     
@@ -73,6 +74,22 @@ def addNick(nick,longApp):
     return True
 
 
+def get_speech():
+    r = sr.Recognizer()
+    
+    with sr.Microphone() as source:
+        print("Speak Now...")
+        audio = r.listen(source)
+        print("Processing...")
+        
+    return r.recognize_google(audio)
+
+
+def search_google(voice):
+    query = voice.replace(" ","+").strip()
+    url = "https://www.google.com/search?q="+query
+    webbrowser.get().open_new(url)
+
 print("Initializing...\n")
 valid = ['RUN','OPEN','EXECUTE','BYE','EXIT','QUIT','ADD NICKNAME','HELP','STOP','CIAO']
 apps = getApps()
@@ -81,12 +98,17 @@ print("Welcome to Py Assistant")
 print("How can I help?\n")
 pyttsx3.speak("Welcome to Py Assistant....How can I help?")
 
-print("Type 'help' if you're confused\n")
-pyttsx3.speak("Type help if you're confused")
+print("Let me know if you need help\n")
+pyttsx3.speak("Let me know if you need help")
 
 while True:
     
-    query = input("Type here -> ").upper()
+    input("Press Enter and start speaking...")
+    print()
+    voice = get_speech()
+    print('You said "',voice,'"')
+    
+    query = voice.upper()
     appFound = 0
     commandValid = 0
     
@@ -96,10 +118,12 @@ while True:
             break
     
     if commandValid == 0:
-        print('Sorry, operation not supported\n')
-        pyttsx3.speak('Sorry, operation not supported.')
+        
+        print('Searching google for',voice)
+        pyttsx3.speak('Searching google for '+ voice)
+        search_google(voice)
         continue
-
+    
     if "HELP" in query:
         f = open("help.txt",'r')
         print(f.read())
@@ -147,3 +171,5 @@ while True:
     if appFound == 0:
         print('Application not found. Try Again!\n')
         pyttsx3.speak("Application not found. Try Again!")
+        
+    os.system('clear')
